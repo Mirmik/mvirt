@@ -4,7 +4,6 @@
 #include "leds.h"
 extern void boot2(void);
 
-
 // Boot entry point to setup the C environment
 //const int STACKStart=0x90000000; //it is DTCM top
 
@@ -65,7 +64,7 @@ void boot(void)
    asm(" LDR r0,_dtcm");
   asm(" MCR p15,#0,r0,c9,c1,#0");
 
- 
+
   
   // Call to boot2 entry point
   asm("b boot2");

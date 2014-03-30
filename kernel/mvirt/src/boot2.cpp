@@ -11,6 +11,8 @@ extern unsigned long _ctor_end;
 extern unsigned long __fini_array_start;
 extern unsigned long __fini_array_end;
 
+
+
 static void call_constructors(unsigned long *start, unsigned long *end) __attribute__((noinline));
 static void call_constructors(unsigned long *start, unsigned long *end)
 {
@@ -26,7 +28,23 @@ static void call_constructors(unsigned long *start, unsigned long *end)
 
 extern void hmain();
 
+extern unsigned long _bss_start;
+extern unsigned long _bss_end;
+
 extern "C" void boot2(){
+
+	dln
+printd("memset\r\n");
+delay_cpu(10);
+  for (int i = (int) _bss_start; i < (int)_bss_end; i++)
+  {
+    *((char*) i)=0;
+  }
+
+
+	dln
+printd("boot2\r\n");
+delay_cpu(10);
 
 // BEGIN C++ support (2/2)
   //Call C++ global constructors
@@ -34,6 +52,10 @@ extern "C" void boot2(){
   call_constructors(&__init_array_start, &__init_array_end);
   call_constructors(&_ctor_start, &_ctor_end);
   // END C++ support (2/2)
+
+dln
+printd("callconstrend\r\n");
+delay_cpu(10);
 
 	second_init();
 	drivers_init();

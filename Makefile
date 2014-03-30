@@ -15,7 +15,7 @@ SDDEFNAME=/dev/sdX
 
 #SD card device name, CHANGE THIS!!!
 #for example, SDNAME=/dev/sdc
-SDNAME=/dev/sdX
+SDNAME=/dev/sdb
 
 
 
@@ -80,6 +80,7 @@ install_bootloader2:: install_intro
 	$(ECHO) ""
 	$(ECHO) "\033[1mFlashing bootloader...\033[0m"
 	$(V)sudo uflash/uflash -d $(SDNAME) -u ubl/ubl.bin -b kernel/uImage.bin -e 0x82000000 -l 0x82000000 $(OUTPUT)
+	sync
 	$(ECHO) "";
 	$(ECHO) "\033[32m   done\033[0m"
 	$(ECHO) ""

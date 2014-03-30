@@ -121,13 +121,15 @@ int _lseek(int file, int ptr, int dir)
 /*
  sbrk - увеличить размер области данных, использутся для malloc
  */
+ char *heap_end=0;
+    
  extern int STACK_POINTER();
 caddr_t _sbrk(int incr)
 {
     extern char __heap_start; 
-    static char *heap_end;
     char *prev_heap_end;
-
+//static char *heap_end=0;
+   
     if (heap_end == 0)
     {
         heap_end = &__heap_start;

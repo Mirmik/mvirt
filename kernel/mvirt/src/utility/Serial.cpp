@@ -1,15 +1,49 @@
 
 
 #include "mvirt/Serial.h"
-HARD_Serial_t Serial0(UART0,48,88);
+HARD_Serial_t Serial0(UART0,100,100);
+
+uint32_t uart0_irq_ls=0,uart0_irq_rx=0,uart0_irq_tx=0;
+
 
 void ISR_UART0(){
 uart0_irq++;
-if (Serial0.tx->head==Serial0.tx->tail) Serial0.tx->transmitting=0;
-else Serial0.send();
+green_led_on();
+uint32_t temp;
+while(1){
+temp=(Serial0.uart->IIR);
+if (temp & 1) break;
+temp =(temp >> 1) & 3;
+//do{
+switch(temp){
+	case 3: uart0_irq_ls++;break;
+	case 2: uart0_irq_rx++;Serial0.receive();break;
+	case 1: uart0_irq_tx++;
+	if (Serial0.tx->head!=Serial0.tx->tail) Serial0.send();
+	break;
+	case 0:break;
+}
+
+}
+green_led_off();
 IRQ_FLAG_REMOVE(UART0INT);
 return;
 };
+
+HARD_Serial_t::HARD_Serial_t(DEVICE_UartRegs* p, uint32_t tx_size,uint32_t rx_size) {
+	
+
+	printd("Serial constructor");dln; delay_cpu(10);
+	
+	uart = p; 
+
+tx = new  ring_buffer(tx_size); 	
+rx = new  ring_buffer(rx_size); 	
+transmitting=0;
+
+};
+HARD_Serial_t::HARD_Serial_t(){dln;
+	printd("Serial constructor2"); delay_cpu(10);};
 
 
 size_t HARD_Serial_t::write(uint8_t c)
@@ -18,19 +52,26 @@ size_t i = (tx->head + 1) % tx->size;
   while (i == tx->tail) return(-1);
   tx->buffer[tx->head] = c;
   tx->head = i;
-  if (transmitting==0 && ((UART0->LSR) & (1<<5))) send();
+  if ( ((uart->IIR & 1)) && ((uart->LSR) & (1<<5))) send();
 }
 
 void HARD_Serial_t::send()
-{tx->transmitting=1;
-char c = tx->buffer[tx->tail];
+{char c = tx->buffer[tx->tail];
 tx->tail = (tx->tail+1) % tx->size; 
 uart->THR = c; }
 
 
+
+void HARD_Serial_t::receive()
+{
+rx->buffer[rx->head] = uart->RBR;
+rx->head = (rx->head+1) % rx->size;}
+
+
+
 int HARD_Serial_t::available(void)
 {
-	return((tx->head - tx->tail + tx->size) % tx->size);
+	return((rx->head - rx->tail + rx->size) % rx->size);
 }
 
 
@@ -46,27 +87,18 @@ interrupt_enable(UART0INT);
 
 
 int HARD_Serial_t::peek(void)
-{/*switch (streamType){
-   case SERIALTYPE: return(((HardwareSerial2*)SSpointer)->peek());
-   default: {*/
-//  if (_rx_buffer->head == _rx_buffer->tail) {
-//    return -1;
-//  } else {
-//    return _rx_buffer->buffer[_rx_buffer->tail];
-//  }
+{if (available()) return(rx->buffer[rx->tail]);
+	else return(-1);
 }
 
 int HARD_Serial_t::read(void)
-{ /* switch (streamType){
-   case SERIALTYPE: return(((HardwareSerial2*)SSpointer)->read());
-   default: {*/
-//  if (_rx_buffer->head == _rx_buffer->tail) {
-//    return -1;
-//  } else {
-//    unsigned char c = _rx_buffer->buffer[_rx_buffer->tail];
-//    _rx_buffer->tail = (unsigned int)(_rx_buffer->tail + 1) % _rx_buffer->size;
-//    return c;
-//  }
+{ if (rx->tail != rx->head){
+char c =rx->buffer[rx->tail];
+rx->tail=(rx->tail+1)%rx->size;	
+return (c);	
+}
+	else return -1;
+	
 }
 
 /*

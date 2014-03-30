@@ -5,7 +5,7 @@ void OS_config()
 {
 Serial0.begin(115200);
 stdio=&Serial0;
-delay(5);
+delay(20);
 }
 
 void hmain(void)

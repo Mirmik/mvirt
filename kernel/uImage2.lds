@@ -78,11 +78,23 @@ SECTIONS
         KEEP (*crtend.o(.dtors))
 
     } 
-
+      
 __exidx_start = .;
 .ARM.exidx : { *(ARM.exidx*)}
 
 	__exidx_end =  . ;
+
+
+
+_bss_start = .;
+  .bss    : 
+  {
+    KEEP(*(.bss))
+    #KEEP (*(COMMON))
+    . = ALIGN(4);
+  }
+_bss_end = .;
+
 	
 
 

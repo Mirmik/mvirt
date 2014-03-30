@@ -37,7 +37,7 @@ volatile void init_UART0()
 
   UART0->FCR = 0x0007;            // Clear UART TX & RX FIFOs
   UART0->FCR = 0x0000;            // Non-FIFO mode
-  UART0->IER = 0x0002;            // Enable interrupts
+  UART0->IER = 0x0007;            // Enable interrupts
   
   UART0->LCR = 0x0003;            // 8-bit words,
                                   // 1 STOP bit generated,
