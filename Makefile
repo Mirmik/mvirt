@@ -1,4 +1,3 @@
-
 ECHO=$(V)echo -e
 M_ECHO=echo -e
 OUTPUT=> /dev/null
@@ -15,7 +14,7 @@ SDDEFNAME=/dev/sdX
 
 #SD card device name, CHANGE THIS!!!
 #for example, SDNAME=/dev/sdc
-SDNAME=/dev/sdb
+SDNAME=/dev/sdX
 
 
 
