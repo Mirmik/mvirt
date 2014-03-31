@@ -8,13 +8,16 @@
 
 class ring_buffer
 {
+	
 public:
-ring_buffer(size_t a);
+size_t tail;
+size_t head;
+size_t size;
 char* buffer;
-byte tail;
-byte head;
-byte size;
-byte transmitting;
+ring_buffer(size_t a);
+int available();
+int store(char c);
+int take();
 };
 
 

@@ -30,9 +30,12 @@ volatile void init_UART0()
 
   delay_cpu( 100 );
 
-  UART0->MDR = 0x0;
-  UART0->DLL = 0xd;               // Set baud rate	
-  UART0->DLH = 0;
+  UART0->MDR = 0x1;
+  uint32_t a = 24000000 / 9600 / 13;  
+	UART0->DLL = a & 0xFF;               // Set baud rate	
+	//UART0->DLH = (a>>8) & 0xFF;
+  //UART0->DLL = 0xd;               // Set baud rate	
+  //UART0->DLH = 0;
  
 
   UART0->FCR = 0x0007;            // Clear UART TX & RX FIFOs

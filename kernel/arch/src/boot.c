@@ -65,7 +65,7 @@ void boot(void)
   asm(" MCR p15,#0,r0,c9,c1,#0");
 
 
-  
+  _init();
   // Call to boot2 entry point
   asm("b boot2");
   

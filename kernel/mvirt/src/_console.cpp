@@ -7,6 +7,7 @@
 
 Console::Console(Stream* _strm)
 {
+printd("Console constructor\n\r");
 mode=0xFF;
 now=0;
 last=0;

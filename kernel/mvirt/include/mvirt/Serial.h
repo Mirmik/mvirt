@@ -5,6 +5,7 @@
 #include "mvirt.h"
 #include "ringbuffer.h"
 
+void ISR_UART0()__attribute__((uses));
 
 extern uint32_t uart0_irq_ls,uart0_irq_rx,uart0_irq_tx;
 
@@ -18,8 +19,8 @@ class HARD_Serial_t : public Stream
 HARD_Serial_t(DEVICE_UartRegs* p, uint32_t tx_size,uint32_t rx_size);
 HARD_Serial_t();
 	
-struct ring_buffer *tx; 	
-struct ring_buffer *rx;		
+ring_buffer *tx; 	
+ring_buffer *rx;		
 void begin();
 
 size_t write(uint8_t c);
@@ -29,8 +30,9 @@ size_t write(uint8_t c);
  void flush();
  
  
- void send();
-void receive();
+void end();
+bool send();
+inline char receive();
  
 void begin(uint32_t baud);
 boolean transmitting;

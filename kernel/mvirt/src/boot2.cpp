@@ -46,11 +46,19 @@ delay_cpu(10);
 printd("boot2\r\n");
 delay_cpu(10);
 
+debug_serial_printhex_int((int)&__preinit_array_start);dln
+debug_serial_printhex_int((int)&__preinit_array_end);dln
+debug_serial_printhex_int((int)&__init_array_start);dln
+debug_serial_printhex_int((int)&__init_array_end);dln
+debug_serial_printhex_int((int)&_ctor_start);dln
+debug_serial_printhex_int((int)&_ctor_end);dln
+
+
 // BEGIN C++ support (2/2)
   //Call C++ global constructors
   call_constructors(&__preinit_array_start, &__preinit_array_end);
   call_constructors(&__init_array_start, &__init_array_end);
-  call_constructors(&_ctor_start, &_ctor_end);
+ call_constructors(&_ctor_start, &_ctor_end);
   // END C++ support (2/2)
 
 dln

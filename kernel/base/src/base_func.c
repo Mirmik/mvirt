@@ -1,8 +1,9 @@
 #include "leds.h"
-
+#include "int_macro.h"
 #include "debug_serial.h"
 void abort(const char * c){
-red_led_on();printd_c(c);while(1);
+IRQ_D();
+printd_c(c);red_led_on();green_led_on();while(1);
 }
 
 

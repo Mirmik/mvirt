@@ -9,10 +9,23 @@ int a=0;
 
 char c;
 
+Console cons(&Serial0);
+
 void idle(){
-if (Serial0.available()) {c=(char)(Serial0.read());};};
+cons.listen();
+};
 
 CSH_t SH(idle,64,64);
+
+
+void blink2 ()
+{static int b;
+	b=(b+1)%2;
+if (b==1) {green_led_on();//green_led_off();
+	}
+else   {green_led_off();//green_led_on();
+	}
+}
 
 void blink ()
 {a=(a+1)%2;
@@ -22,13 +35,9 @@ else   {red_led_off();//green_led_on();
 	}
 }
 void task1(){
+//prln(uart0_irq);
+//prln(uart0_irq_rx);
 
-prln(uart0_irq);
-prln(uart0_irq_rx);
-prln(uart0_irq_tx);
-prln(uart0_irq_ls);
-prln(Serial0.peek());
-prln(c);
 	}
 
 
@@ -38,16 +47,17 @@ int temp=1;
 
 void setup ()
 {stdio=&Serial0;
+	//UART0->IER=7;
 //Serial0.print("OHAYO GODZAIMASHITA!!!");
-
-temp=millis()%3+1;
-
-prlnhex(&_bss_end);
-prlnhex(&_bss_start);
-
-prln("MIRMIK WAS HERE!!!");	
+command("about",about);
+command("blink",blink2);
+command("task1",task1);
+command("list",command_print);
+prln("MirmikMirmikMirmik");
 SH.newTimer(task1,100,REPEAT);	
 	
+//Serial0.end();	
+//while(1);	
 SH.newTimer(blink,1000,REPEAT);	
 };
 
